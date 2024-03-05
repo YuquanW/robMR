@@ -87,7 +87,6 @@ seMR <- function(beta_exp,
                                        iter_s,
                                        tol_tau)
     }
-    print(tau1_mroots)
     beta1 <- beta1_mroots[which.min(tau1_mroots)]
     tau1 <- min(tau1_mroots)
     return(c(beta1, tau1))
