@@ -1,12 +1,12 @@
 Package: robMR
-Title: What the Package Does (One Line, Title Case)
+Title: A robust estimate for Mendelian randomization studies
 Version: 0.0.0.9000
 Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
-License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
-    license
+    person("Yuquan", "Wang", , "21110700112@m.fudan.edu.cn", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0002-6656-7443"))
+Description: A high breakdown point and high efficiency MM-estimate for causal effect in Mendelian randomization.
+License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.1
+LazyData: true
