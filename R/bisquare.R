@@ -16,7 +16,7 @@ psi <- function(x, c) {
 }
 
 wgt_m <- function(x, c) {
-  psi(x, c)/(x^2+1e-32)*(x!=0) + 1*(x==0)
+  psi(x, c)/(x+1e-32)*(x!=0) + 1*(x==0)
 }
 
 wgt_s <- function(x, c) {

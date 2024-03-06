@@ -9,7 +9,7 @@ seMR <- function(beta_exp,
                  beta_out,
                  se_out,
                  mroots = F,
-                 c = 1.56,
+                 c = 1.547,
                  iter_s = 20,
                  tol_s = 1e-5,
                  tol_beta = 1e-5,
@@ -89,8 +89,12 @@ seMR <- function(beta_exp,
     }
     beta1 <- beta1_mroots[which.min(tau1_mroots)]
     tau1 <- min(tau1_mroots)
-    return(c(beta1, tau1))
+    return(list(beta_s = beta1,
+                tau_s = tau1,
+                r_hat = (beta_out - beta_exp*beta1)/sqrt(beta1^2*se_exp^2 + se_out^2)))
   } else {
-  return(c(beta1, tau1))
+  return(list(beta_s = beta1,
+              tau_s = tau1,
+              r_hat = (beta_out - beta_exp*beta1)/sqrt(beta1^2*se_exp^2 + se_out^2)))
   }
 }
