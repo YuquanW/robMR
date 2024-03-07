@@ -1,13 +1,13 @@
-irwls_semr_beta <- function(beta_exp,
-                            se_exp,
-                            beta_out,
-                            se_out,
-                            mroots,
-                            beta1,
-                            tau1,
-                            c,
-                            iter_s,
-                            tol_beta) {
+irwls_beta <- function(beta_exp,
+                       se_exp,
+                       beta_out,
+                       se_out,
+                       mroots,
+                       beta1,
+                       tau1,
+                       c,
+                       iter_s,
+                       tol_beta) {
   if (mroots == T) {
     beta1_mroots <- NULL
   }
@@ -39,15 +39,15 @@ irwls_semr_beta <- function(beta_exp,
   }
 }
 
-irwls_semr_tau <- function(beta_exp,
-                           se_exp,
-                           beta_out,
-                           se_out,
-                           beta1,
-                           tau1,
-                           c,
-                           iter_s,
-                           tol_tau) {
+irwls_tau <- function(beta_exp,
+                      se_exp,
+                      beta_out,
+                      se_out,
+                      beta1,
+                      tau1,
+                      c,
+                      iter_s,
+                      tol_tau) {
   for (i in 1:iter_s) {
     tau0 <- tau1
     r <- (beta_out - beta_exp*beta1)/sqrt(beta1^2*se_exp^2 + se_out^2)
