@@ -1,4 +1,5 @@
 #' Title
+#' @import nloptr
 #'
 #' @return
 #' @export
@@ -10,14 +11,11 @@ robMR <- function(beta_exp,
                   se_out,
                   sel_bias = F,
                   pval = 0.05,
-                  mroots = F,
                   c = 1.547,
                   k = 4.68,
-                  iter_mm = 10,
                   iter_s = 20,
                   tol_mm = 1e-5,
                   tol_s = 1e-5,
-                  tol_beta = 1e-5,
                   tol_tau= 1e-3) {
   if (sel_bias == T) {
     lambda <- qnorm(1 - pval/2)
@@ -48,16 +46,15 @@ robMR <- function(beta_exp,
   for (i in 1:iter_s) {
     beta0 <- beta1
     tau0 <- tau1
-    beta1 <- irwls_beta(beta_exp,
-                        se_exp,
-                        beta_out,
-                        se_out,
-                        mroots = F,
-                        beta0,
-                        tau0,
-                        c,
-                        iter_s,
-                        tol_beta)
+    f <- function(beta) {
+      mean(rho((beta_out - beta*beta_exp)/(tau0*sqrt(se_exp^2*beta^2+se_out^2)), c))
+    }
+    beta1 <- stogo(beta0,
+                   f,
+                   lower = beta1 - 5*max(se_out^2/se_exp^2),
+                   upper = beta1 + 5*max(se_out^2/se_exp^2),
+                   xtol_rel = .Machine$double.eps^0.5,
+                   maxeval = 100)$par
     tau1 <- irwls_tau(beta_exp,
                       se_exp,
                       beta_out,
@@ -73,50 +70,25 @@ robMR <- function(beta_exp,
       break
     }
   }
+
   if (abs(beta1 - beta0)/abs(beta1 + 1e-10) +
       abs(tau1 - tau0)/abs(tau1 + 1e-10) >
       tol_s) {
     warning("S-estimate warning: IRWLS did not converge. Consider to increase iter_s.")
   }
-  if (mroots == T) {
-    beta1_mroots <- irwls_beta(beta_exp,
-                               se_exp,
-                               beta_out,
-                               se_out,
-                               mroots,
-                               beta1,
-                               tau1,
-                               c,
-                               iter_s,
-                               tol_beta)
-    tau1_mroots <- rep(0, length(beta1))
-    for (j in 1:length(beta1_mroots)) {
-      tau1_mroots[j] <- irwls_tau(beta_exp,
-                                  se_exp,
-                                  beta_out,
-                                  se_out,
-                                  beta1_mroots[j],
-                                  tau1,
-                                  c,
-                                  iter_s,
-                                  tol_tau)
-    }
-    beta1 <- beta1_mroots[which.min(tau1_mroots)]
-    tau1 <- min(tau1_mroots)
+  f <- function(beta) {
+    mean(rho((beta_out - beta*beta_exp)/(tau1*sqrt(se_exp^2*beta^2+se_out^2)), k))
   }
-  beta_mm <- irwls_beta(beta_exp,
-                        se_exp,
-                        beta_out,
-                        se_out,
-                        mroots = F,
-                        beta1,
-                        tau1,
-                        k,
-                        iter_mm,
-                        tol_mm)
+  beta_mm <- stogo(beta1,
+                   f,
+                   lower = beta1 - max(se_out^2/se_exp^2),
+                   upper = beta1 + max(se_out^2/se_exp^2),
+                   xtol_rel = .Machine$double.eps^0.5,
+                   maxeval = 100,
+                   nl.info = T)$par
   return(list(beta_mm = beta_mm,
               beta_s = beta1,
               tau_s = tau1,
-              r_hat_mm = (beta_out - beta_exp*beta_mm)/sqrt(beta_mm^2*se_exp^2 + se_out^2),
-              r_hat_s = (beta_out - beta_exp*beta1)/sqrt(beta1^2*se_exp^2 + se_out^2)))
+              r_hat_mm = (beta_out - beta_exp*beta_mm)/(tau1*sqrt(beta_mm^2*se_exp^2 + se_out^2)),
+              r_hat_s = (beta_out - beta_exp*beta1)/(tau1*sqrt(beta1^2*se_exp^2 + se_out^2))))
 }
