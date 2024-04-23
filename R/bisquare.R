@@ -22,3 +22,16 @@ wgt_m <- function(x, c) {
 wgt_s <- function(x, c) {
   rho(x, c)/(x^2+1e-32)*(x!=0) + 6/c^2*(x==0)
 }
+
+
+rho_biw <- function(x, k) {
+  (3*(x/k)-3*(x/k)^2+(x/k)^3)*(x<=k) + 1*(x>k)
+}
+
+psi_biw <- function(x, k) {
+  (3/k-6/k^2*x+3/k^3*x^2)*(x<=k) + 0*(x>k)
+}
+
+ppsi_biw <- function(x, k) {
+  (-6/k^2+6/k^3*x)*(x<=k) + 0*(x>k)
+}
