@@ -170,54 +170,54 @@ robMR <- function(beta_exp,
   #            2*beta_mm*se_exp^2/(beta_mm^2*se_exp^2+se_out^2)*psi_biw(d/sigma1, k)*t*s-
   #            se_exp^2*se_out^2/(beta_mm^2*se_exp^2+se_out^2)^2*psi_biw(d/sigma1, k)*d)
   se_mm <- sqrt(C[3,3])
-
-  beta_mm_b <- rep(0, 10000)
-  sigma_s_b <- rep(0, 10000)
-  beta_s_b <- rep(0, 10000)
-  for (i in 1:10000) {
-    index <- sample(p, p, replace = T)
-    beta_exp_b <- beta_exp[index]
-    se_exp_b <- se_exp[index]
-    beta_out_b <- beta_out[index]
-    se_out_b <- se_out[index]
-    d_b <- (beta_out_b - beta_exp_b*beta_mm)^2/(se_exp_b^2*beta_mm^2 + se_out_b^2)
-    w_b <- psi_biw(d_b/sigma1, k)
-    s_b <- (beta_mm*se_exp_b^2*beta_out_b+se_out_b^2*beta_exp_b)/(beta_mm^2*se_exp_b^2+se_out_b^2)^(3/2)
-    t_b <- (beta_out_b-beta_exp_b*beta_mm)/sqrt(beta_mm^2*se_exp_b^2+se_out_b^2)
-    beta_mm_tmp <- sum(w_b*s_b*beta_out_b/sqrt(beta_mm^2*se_exp_b^2+se_out_b^2))/
-      sum(w_b*s_b*beta_exp_b/sqrt(beta_mm^2*se_exp_b^2+se_out_b^2))
-
-    d_t <- (beta_out_b - beta_exp_b*beta1)^2/(se_exp_b^2*beta1^2 + se_out_b^2)
-    w_t <- psi_biw(d_t/sigma1, c)
-    s_t <- (beta1*se_exp_b^2*beta_out_b+se_out_b^2*beta_exp_b)/(beta1^2*se_exp_b^2+se_out_b^2)^(3/2)
-    t_t <- (beta_out_b-beta_exp_b*beta1)/sqrt(beta1^2*se_exp_b^2+se_out_b^2)
-    sigma_s_tmp <- 2*sigma1/p*sum(rho_biw(d_t/sigma1, c))
-    beta_s_tmp <- sum(w_t*s_t*beta_out_b/sqrt(beta1^2*se_exp_b^2+se_out_b^2))/
-      sum(w_t*s_t*beta_exp_b/sqrt(beta1^2*se_exp_b^2+se_out_b^2))
-    C11 <- B33/sum(psi_biw(d_mm/sigma1, k)*s_mm*beta_exp/sqrt(beta_mm^2*se_exp^2+se_out^2))
-    C12 <- B32/sum(psi_biw(d_mm/sigma1, k)*s_mm*beta_exp/sqrt(beta_mm^2*se_exp^2+se_out^2))
-    C13 <- 0
-    C21 <- 0
-    C22 <- sum(psi_biw(d_s/sigma1, c)*d_s)*2/(p*sigma1)
-    C23 <- 0
-    C31 <- 0
-    C32 <- B12/sum(psi_biw(d_s/sigma1, c)*s_s*beta_exp/sqrt(beta1^2*se_exp^2+se_out^2))
-    C33 <- B11/sum(psi_biw(d_s/sigma1, c)*s_s*beta_exp/sqrt(beta1^2*se_exp^2+se_out^2))
-    C <- matrix(c(C11, C12, C13,
-                  C21, C22, C23,
-                  C31, C32, C33), 3, 3, byrow = T)
-    par_b <- c(beta_mm, sigma1, beta1) + drop(solve(C, c(beta_mm_tmp - beta_mm, sigma_s_tmp - sigma1, beta_s_tmp - beta1)))
-    beta_mm_b[i] <- par_b[1]
-    sigma_s_b[i] <- par_b[2]
-    beta_s_b[i] <- par_b[3]
-  }
+  print(sqrt(C[2,2]))
+  # beta_mm_b <- rep(0, 10000)
+  # sigma_s_b <- rep(0, 10000)
+  # beta_s_b <- rep(0, 10000)
+  # for (i in 1:10000) {
+  #   index <- sample(p, p, replace = T)
+  #   beta_exp_b <- beta_exp[index]
+  #   se_exp_b <- se_exp[index]
+  #   beta_out_b <- beta_out[index]
+  #   se_out_b <- se_out[index]
+  #   d_b <- (beta_out_b - beta_exp_b*beta_mm)^2/(se_exp_b^2*beta_mm^2 + se_out_b^2)
+  #   w_b <- psi_biw(d_b/sigma1, k)
+  #   s_b <- (beta_mm*se_exp_b^2*beta_out_b+se_out_b^2*beta_exp_b)/(beta_mm^2*se_exp_b^2+se_out_b^2)^(3/2)
+  #   t_b <- (beta_out_b-beta_exp_b*beta_mm)/sqrt(beta_mm^2*se_exp_b^2+se_out_b^2)
+  #   beta_mm_tmp <- sum(w_b*s_b*beta_out_b/sqrt(beta_mm^2*se_exp_b^2+se_out_b^2))/
+  #     sum(w_b*s_b*beta_exp_b/sqrt(beta_mm^2*se_exp_b^2+se_out_b^2))
+  #
+  #   d_t <- (beta_out_b - beta_exp_b*beta1)^2/(se_exp_b^2*beta1^2 + se_out_b^2)
+  #   w_t <- psi_biw(d_t/sigma1, c)
+  #   s_t <- (beta1*se_exp_b^2*beta_out_b+se_out_b^2*beta_exp_b)/(beta1^2*se_exp_b^2+se_out_b^2)^(3/2)
+  #   t_t <- (beta_out_b-beta_exp_b*beta1)/sqrt(beta1^2*se_exp_b^2+se_out_b^2)
+  #   sigma_s_tmp <- 2*sigma1/p*sum(rho_biw(d_t/sigma1, c))
+  #   beta_s_tmp <- sum(w_t*s_t*beta_out_b/sqrt(beta1^2*se_exp_b^2+se_out_b^2))/
+  #     sum(w_t*s_t*beta_exp_b/sqrt(beta1^2*se_exp_b^2+se_out_b^2))
+  #   C11 <- B33/sum(psi_biw(d_mm/sigma1, k)*s_mm*beta_exp/sqrt(beta_mm^2*se_exp^2+se_out^2))
+  #   C12 <- B32/sum(psi_biw(d_mm/sigma1, k)*s_mm*beta_exp/sqrt(beta_mm^2*se_exp^2+se_out^2))
+  #   C13 <- 0
+  #   C21 <- 0
+  #   C22 <- sum(psi_biw(d_s/sigma1, c)*d_s)*2/(p*sigma1)
+  #   C23 <- 0
+  #   C31 <- 0
+  #   C32 <- B12/sum(psi_biw(d_s/sigma1, c)*s_s*beta_exp/sqrt(beta1^2*se_exp^2+se_out^2))
+  #   C33 <- B11/sum(psi_biw(d_s/sigma1, c)*s_s*beta_exp/sqrt(beta1^2*se_exp^2+se_out^2))
+  #   C <- matrix(c(C11, C12, C13,
+  #                 C21, C22, C23,
+  #                 C31, C32, C33), 3, 3, byrow = T)
+  #   par_b <- c(beta_mm, sigma1, beta1) + drop(solve(C, c(beta_mm_tmp - beta_mm, sigma_s_tmp - sigma1, beta_s_tmp - beta1)))
+  #   beta_mm_b[i] <- par_b[1]
+  #   sigma_s_b[i] <- par_b[2]
+  #   beta_s_b[i] <- par_b[3]
+  # }
 
   return(list(beta_mm = beta_mm,
               se_mm = se_mm,
               z_mm = beta_mm/se_mm,
               pval_mm = 2*(1 - pnorm(abs(beta_mm/se_mm))),
               ci_mm = c(beta_mm + qnorm(0.025)*se_mm, beta_mm - qnorm(0.025)*se_mm),
-              beta_mm_b = beta_mm_b,
+              #beta_mm_b = beta_mm_b,
               beta_s = beta1,
               sigma_s = sigma1,
               se_s = se1,
@@ -226,8 +226,123 @@ robMR <- function(beta_exp,
               ci_s = c(beta1 + qnorm(0.025)*se1, beta1 - qnorm(0.025)*se1),
               r_hat_mm = (beta_out - beta_exp*beta_mm)/sqrt(sigma1*beta_mm^2*se_exp^2 + sigma1*se_out^2),
               r_hat_s = (beta_out - beta_exp*beta1)/sqrt(sigma1*beta1^2*se_exp^2 + sigma1*se_out^2),
-              w = psi_biw((beta_out - beta_exp*beta_mm)^2/(sigma1*beta_mm^2*se_exp^2 + sigma1*se_out^2), k)*k/3))
+              w_s = psi_biw(d_s/sigma1, c)*c/3,
+              w_mm = psi_biw(d_mm/sigma1, k)*k/3))
 }
+
+robMR <- function(beta_exp,
+                  se_exp,
+                  beta_out,
+                  se_out,
+                  c = 1.56,
+                  sel_bias = F,
+                  lambda = 1.96,
+                  iter_s = 20,
+                  tol_s = 1e-3,
+                  iter_mm = 20,
+                  tol_mm = 1e-5,
+                  print = F) {
+  p <- length(beta_exp)
+  if (sel_bias == T) {
+    lambda <- qnorm(1 - pval/2)
+    a_plus <- lambda-beta_exp/se_exp
+    a_minus <- -lambda-beta_exp/se_exp
+    beta_exp <- beta_exp - se_exp*(dnorm(a_plus)-dnorm(a_minus))/
+      (1-pnorm(a_plus)+pnorm(a_minus))
+    se_exp <- se_exp*(1 - (a_plus*dnorm(a_plus)-a_minus*dnorm(a_minus))/(1-pnorm(a_plus)+pnorm(a_minus))
+                      + ((dnorm(a_plus)-dnorm(a_minus))/(1-pnorm(a_plus)+pnorm(a_minus)))^2)
+  }
+
+  #beta1 <- median(beta_out/beta_exp)
+  #beta1 <- irwls_beta_init(beta_exp, se_exp, beta_out, se_out, beta1, iter_s, tol_s)
+  f_init <- function(beta) {
+    median((beta_out-beta_exp*beta)^2/(beta^2*se_exp^2+se_out^2))
+  }
+  beta1 <- nloptr(median(beta_out/beta_exp), f_init, opts = list("algorithm" = "NLOPT_LN_BOBYQA",
+                                                                 "xtol_rel"=1.0e-8,
+                                                                 "print_level" = 0))$x0
+  sigma1 <- irwls_sigma(beta_exp, se_exp, beta_out, se_out, beta1, 1, c, iter_s, tol_s)
+  # for (i in 1:iter_s) {
+  #   beta0 <- beta1
+  #   sigma0 <- sigma1
+  #   beta1 <- irwls_beta(beta_exp, se_exp, beta_out, se_out, beta0, sigma0, c, iter_s, tol_s)
+  #   sigma1 <- irwls_sigma(beta_exp, se_exp, beta_out, se_out, beta0, sigma0, c, iter_s, tol_s)
+  #   if (abs(beta1 - beta0)/abs(beta1 + 1e-10) +
+  #       abs(sigma1 - sigma0)/abs(sigma1 + 1e-10) <=
+  #       tol_s) {
+  #     break
+  #   }
+  # }
+  #
+  # if (abs(beta1 - beta0)/abs(beta1 + 1e-10) +
+  #     abs(sigma1 - sigma0)/abs(sigma1 + 1e-10) >
+  #     tol_s) {
+  #   warning("S-estimate warning: IRWLS did not converge. Consider to increase iter_s.")
+  # }
+
+  q_s <- se_exp*se_out/(beta1^2*se_exp^2+se_out^2)
+  s_s <- (beta_out*beta1*se_exp^2+beta_exp*se_out^2)/(se_exp*se_out*sqrt(beta1^2*se_exp^2+se_out^2))
+  r_s <- (beta_out-beta1*beta_exp)/sqrt(beta1^2*se_exp^2+se_out^2)
+  f <- function(k) {
+    k*max(q_s)/abs(sum(1/sigma1*ppsi(abs(s_s)*r_s/sigma1, k)*(r_s^2-s_s^2)*q_s^2))
+  }
+  k <- direct(f, lower = 1.56, upper = 30)$par
+
+  beta_mm <- irwls_beta(beta_exp, se_exp, beta_out, se_out, beta1, sigma1, k, iter_mm, tol_mm)
+  s_mm <- (beta_out*beta_mm*se_exp^2+beta_exp*se_out^2)/(se_exp*se_out*sqrt(beta_mm^2*se_exp^2+se_out^2))
+  r_mm <- (beta_out-beta_mm*beta_exp)/sqrt(beta_mm^2*se_exp^2+se_out^2)
+  q_mm <- se_exp*se_out/(beta_mm^2*se_exp^2+se_out^2)
+  w_mm <- wgt_m(abs(s_mm)*r_mm/sigma1, k)
+  # A <- crossprod(cbind(psi(abs(s_s)*r_s/sigma1, c)*s_s/abs(s_s)*q_s,
+  #                      rho(r_s/sigma1, c)-1/2,
+  #                      psi(abs(s_mm)*r_mm/sigma1, k)*s_mm/abs(s_mm)*q_mm))
+  # B <- matrix(c(sum(1/sigma1*ppsi(abs(s_s)*r_s/sigma1, c)*(r_s^2-s_s^2)*q_s^2), -sum(1/sigma1^2*ppsi(abs(s_s)*r_s/sigma1, c)*r_s*s_s*q_s), 0,
+  #               -sum(psi(r_s/sigma1, c)*s_s*q_s), -sum(psi(r_s/sigma1, c)*r_s/sigma1^2), 0,
+  #               0, -sum(1/sigma1^2*ppsi(abs(s_mm)*r_mm/sigma1, k)*r_mm*s_mm*q_mm), sum(1/sigma1*ppsi(abs(s_mm)*r_mm/sigma1, k)*(r_mm^2-s_mm^2)*q_mm^2)), byrow = T, nrow = 3)
+  # V <- solve(B, A)%*%t(solve(B))
+  beta_mm_b <- rep(0, 10000)
+  sigma_s_b <- rep(0, 10000)
+  for (i in 1:10000) {
+    index <- sample(p, p, replace = T)
+    beta_exp_b <- beta_exp[index]
+    se_exp_b <- se_exp[index]
+    beta_out_b <- beta_out[index]
+    se_out_b <- se_out[index]
+    r_b <- (beta_out_b-beta_mm*beta_exp_b)/sqrt(beta_mm^2*se_exp_b^2+se_out_b^2)
+    s_b <- (beta_out_b*beta_mm*se_exp_b^2+beta_exp_b*se_out_b^2)/(se_exp_b*se_out_b*sqrt(beta_mm^2*se_exp_b^2+se_out_b^2))
+    w_b <- wgt_m(abs(s_b)*r_b/sigma1, k)
+    q_b <- se_exp_b*se_out_b/(beta_mm^2*se_exp_b^2+se_out_b^2)
+    beta_mm_tmp <- sum(w_b*s_b*q_b*beta_out_b/sqrt(beta_mm^2*se_exp_b^2+se_out_b^2))/
+      sum(w_b*s_b*q_b*beta_exp_b/sqrt(beta_mm^2*se_exp_b^2+se_out_b^2))
+
+    r_sb <- (beta_out_b-beta1*beta_exp_b)/sqrt(beta1^2*se_exp_b^2+se_out_b^2)
+    sigma_s_tmp <- 2*sigma1/p*sum(rho(r_sb/sigma1, c))
+    C11 <- sum(1/sigma1*ppsi(abs(s_mm)*r_mm/sigma1, k)*(s_mm^2-r_mm^2)*q_mm^2)/
+      sum(w_mm*s_mm*q_mm*beta_exp/sqrt(beta_mm^2*se_exp^2+se_out^2))
+    C12 <- sum(1/sigma1^2*ppsi(abs(s_mm)*r_mm/sigma1, k)*r_mm*s_mm*q_mm)/
+      sum(w_mm*s_mm*q_mm*beta_exp/sqrt(beta_mm^2*se_exp^2+se_out^2))
+    C21 <- 0
+    C22 <- sum(psi(r_s/sigma1, c)*r_s)*2/(p*sigma1)
+    C <- matrix(c(C11, C12,
+                  C21, C22), 2, 2, byrow = T)
+    par_b <- c(beta_mm, sigma1) + drop(solve(C, c(beta_mm_tmp - beta_mm, sigma_s_tmp - sigma1)))
+    beta_mm_b[i] <- par_b[1]
+    sigma_s_b[i] <- par_b[2]
+  }
+  # se_s <- sqrt(V[1, 1])
+  # se_mm <- sqrt(V[3, 3])
+
+  return(list(beta_mm = beta_mm,
+              #se_mm = se_mm,
+              beta_mm.ci = quantile(beta_mm_b, c(0.025, 0.975)),
+              beta_s = beta1,
+              #se_s = se_s,
+              sigma_s = sigma1,
+              w_s = wgt_m(abs(s_s)*r_s/sigma1, c),
+              w_mm = wgt_m(abs(s_mm)*r_mm/sigma1, k)
+              ))
+}
+
 
 library(MRcML)
 library(rootSolve)
@@ -253,12 +368,12 @@ colnames(exposure_data) <- str_replace(nms, "outcome", "exposure")
 outcome_data <- extract_outcome_data(exposure_data$SNP, proxies = F, outcomes = "ieu-a-2")#extract_outcome_data(selection_data$SNP, proxies = F, outcomes = "ieu-a-974")
 dat <- harmonise_data(exposure_data, outcome_data)
 
-#dat <- bmi.cad
+dat <- bmi.bmi
 beta_exp <- dat$beta.exposure
 beta_out <- dat$beta.outcome
 se_exp <- dat$se.exposure
 se_out <- dat$se.outcome
-beta_out2 <- bmi.bmi$beta.outcome+c(rnorm(floor(812*0.48), 0, 1/sqrt(812)),
+beta_out2 <- bmi.bmi$beta.outcome+c(rnorm(floor(812*0.48), 0, 5*mean(se_out)),
                                     rep(0, 812 - floor(0.48*812)))
 p <- length(beta_exp)
 beta_hat <- rep(0, 100)
